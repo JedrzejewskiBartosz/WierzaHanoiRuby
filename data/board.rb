@@ -1,3 +1,15 @@
+# Representation of the Tower of Hanoi game board.
+#
+# This class manages the board composed of multiple levels (rows),
+# each containing up to three pins holding stones. It handles game logic,
+# visual display, and automated solving of the puzzle.
+#
+# @!attribute [rw] levels
+#   @return [Array<Level>] Array representing each row of the board.
+#
+# @!attribute [rw] width
+#   @return [Integer] Maximum width of a single pin (used for display).
+
 class Board
   attr_accessor :levels, :width
   def initialize(stones)
@@ -11,11 +23,11 @@ class Board
     @width = stones + 3
   end
 
-  def add_level(lvl)
-    @levels.push(lvl)
-  end
+  # ==========================
+  #       ANIMATION
+  # ==========================
 
-  # ANIMATION
+  # Displays the entire board.
   def show_board
     top_pins
     levels.each do |lvl|
@@ -24,6 +36,7 @@ class Board
     bottom_pins
   end
 
+  # Prints the top line of the board
   def top_pins
     line = []
     3.times do
@@ -38,6 +51,7 @@ class Board
     puts line.join
   end
 
+  # Prints the bottom line of the board
   def bottom_pins
     line = []
     3.times do
@@ -50,6 +64,11 @@ class Board
     puts line.join
   end
 
+  # Animates the shifting of a stone from one pin to another.
+  #
+  # @param from_pin [Integer] The starting pin index.
+  # @param to_pin [Integer] The destination pin index.
+  # @param stone [Stone] The stone being moved.
   def shift_animation(from_pin,to_pin, stone)
     stone_up(from_pin,stone)
     line = []
@@ -89,6 +108,10 @@ class Board
     stone_down(to_pin,stone)
   end
 
+  # Animation the lifting of a stone
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @param stone [Stone] The stone to lift
   def stone_up(pin, stone)
     d = get_depth(pin)
     d.times do
@@ -102,6 +125,10 @@ class Board
       puts levels[0].level[pin].width = 0
   end
 
+  # Animation the descent of a stone
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @param stone [Stone] The stone to lower
   def stone_down(pin,stone)
     d = get_depth(pin)
     curr = 0
@@ -116,6 +143,14 @@ class Board
     puts levels[0].level[pin].width = 0
   end
 
+  # ==================================
+  #     STONE OPERATION
+  # ==================================
+
+  # Returns the number of empty slots on a pin.
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @return [Integer] number of empty slots.
   def get_depth(pin)
     depth = 0
     levels.each do |lvl|
@@ -126,8 +161,10 @@ class Board
     depth
   end
 
-  # STONE OPERATION
-
+  # Check and returns the stone at the top of pin.
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @return [Stone] The stone on top of pin
   def check_stone_on_top(pin)
     top = nil
     levels.each do |lvl|
@@ -139,6 +176,10 @@ class Board
     top
   end
 
+  # Removes and returns the top stone from a pin.
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @return [Stone] The removed stone
   def get_stone_on_top(pin)
     top = nil
     levels.each do |lvl|
@@ -151,6 +192,15 @@ class Board
     end
     top
   end
+
+  # Attempts to move a stone from one pin to another.
+  #
+  # The method checks whether the move is valid (i.e., the destination pin
+  # does not contain a smaller stone on top) and updates the board state.
+  #
+  # @param from_pin [Integer] Index of the source pin (0, 1, or 2).
+  # @param to_pin [Integer] Index of the destination pin (0, 1, or 2).
+  # @return [Boolean] Returns true if the move was successful, false otherwise.
 
   def move_stone(from_pin,to_pin)
     if check_stone_on_top(to_pin).width != 0
@@ -170,6 +220,11 @@ class Board
     true
   end
 
+  # Places a stone on top of a pin
+  #
+  # @param pin [Integer] The index of the pin (0, 1 or 2).
+  # @param stone [Stone] The stone put on the top.
+  # @return [Boolean] True if successful, false otherwise.
   def put_stone_on_top(pin,stone)
     if check_stone_on_top(pin).width <= stone.width && check_stone_on_top(pin).width != 0
       return false
@@ -184,7 +239,13 @@ class Board
     true
   end
 
-  # GAMEPLAY
+  # ========================
+  #         GAMEPLAY
+  # ========================
+
+  # Checks whether the game is complete.
+  #
+  # @return [Boolean] True if only the last pin has stones.
   def check_end
     levels.each do |lvl|
       if lvl.level[0].width != 0 || lvl.level[1].width != 0
@@ -194,6 +255,13 @@ class Board
     true
   end
 
+  # Solves the Tower of Hanoi puzzle automatically using an iterative algorithm.
+  #
+  # For even numbers of stones, it performs moves in the order: A→B, A→C, B→C.
+  # For odd numbers of stones: A→C, A→B, B→C.
+  # Repeats the cycle until all stones are moved to the final pin.
+  #
+  # The method uses basic move validation to determine the next valid move in the sequence.
   def solve
     finish = true
     case levels.length % 2
@@ -234,5 +302,3 @@ class Board
   end
 
 end
-#AB AC BC
-#AC AB BC
