@@ -27,7 +27,7 @@ Ten projekt to wizualizacja i automatyczne rozwiązanie klasycznego problemu _Wi
 Upewnij się, że pliki `level.rb`, `stone.rb`, oraz `board.rb` znajdują się w folderze `./data`.
 
 ```bash
-ruby main.rb
+ruby app.rb
 ```
 
 ---
