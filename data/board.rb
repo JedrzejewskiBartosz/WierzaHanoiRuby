@@ -1,23 +1,18 @@
 class Board
   attr_accessor :levels, :width
-  def initialize
+  def initialize(stones)
     @levels = []
-    @width = 11
+    @width = 0
+    stones.times do |iter|
+      tmp = Level.new
+      tmp.add_stone_to_level(0, Stone.new(iter))
+      @levels << tmp
+    end
+    @width = stones + 3
   end
 
   def add_level(lvl)
     @levels.push(lvl)
-    width_correct
-  end
-
-  def width_correct
-    all = []
-    levels.each do |lvl|
-      all << lvl.stone_width
-    end
-
-    puts all.max
-    @width = all.max + 3
   end
 
   # ANIMATION
